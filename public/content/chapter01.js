@@ -108,7 +108,8 @@ func main() {
 <li><strong>間違いに気づきにくい</strong>：<code>%d</code>に文字列を渡すと<code>go vet</code>（Goに標準で付いているコードのチェックツール）が警告してくれるが、<code>%v</code>は何でも受け入れるため、渡す値を間違えても気づけない。</li>
 <li><strong>表示を細かく整えられない</strong>：「小数点以下2桁だけ表示」「幅をそろえて右寄せ」のような調整は、<code>%.2f</code>や<code>%5d</code>のような専用の指定子でしか指定できない。</li>
 </ul>
-<p>こうした使い分けは第11章ステップ107「fmt.Sprintfと書式指定」で改めて学びます。今は「<code>%v</code>で困ることはないが、型がはっきり分かっているときは<code>%s</code>や<code>%d</code>を選ぶ方が丁寧」と思っておけば十分です。</p>`,
+<p>こうした使い分けは第11章ステップ107「fmt.Sprintfと書式指定」で改めて学びます。今は「<code>%v</code>で困ることはないが、型がはっきり分かっているときは<code>%s</code>や<code>%d</code>を選ぶ方が丁寧」と思っておけば十分です。</p>
+<p>公式ドキュメント：<a href="https://pkg.go.dev/fmt" target="_blank" rel="noopener">fmtパッケージ</a>（書式指定子の一覧、英語）</p>`,
       task: `TODOの行の<code>Printf</code>を完成させて、<code>Gopherは13歳です</code>と<code>好きなものはコーヒーです</code>の2行を表示してください。1行目は<code>%s</code>と<code>%d</code>、2行目は<code>%v</code>を使うこと（出力だけでなく、使った書式指定子も判定されます）。`,
       code: `package main
 
@@ -157,8 +158,16 @@ rate := 10 // 行の途中から書くこともできる
 ブロックコメントでも書ける
 */</code></pre>
 <p>コメントには大きく2つの使い道があります。1つ目は<strong>コードの意図や背景を説明する</strong>こと。「何をしているか」はコードを読めば分かるので、「なぜそうしているか」を書くのが良いコメントとされています。2つ目は<strong>コメントアウト</strong>、つまり一時的にコードを無効化することです。デバッグ（不具合の原因調査）中に「この行を止めたらどうなるか」を試すときに便利です。</p>
-<p>また、Goには関数やパッケージの直前に書いたコメントがそのままドキュメントになる文化があり（Docコメントと呼ばれます）、標準ライブラリの説明もこの仕組みで生成されています。今は「宣言の直前のコメントは特別扱いされる」ことだけ頭の片隅に置いておきましょう。</p>`,
-      task: `1行目の<code>fmt.Println</code>を行コメントで無効化（コメントアウト）し、<code>コメントは実行されない</code>だけが表示されるようにしてください。さらに、main関数の上に自分の言葉で説明コメントを書いてみましょう。`,
+<h4>宣言の直前のコメントは「ドキュメント」になる</h4>
+<p>Goには、関数やパッケージの<strong>宣言のすぐ上に書いたコメントが、そのまま公式の説明文（ドキュメント）として扱われる</strong>文化があります。これを<strong>Docコメント</strong>と呼びます。たとえば、Goに同梱されている<code>fmt.Println</code>のソースコードは次のようになっています。</p>
+<pre><code>// Println formats using the default formats for its operands and writes to standard output.
+// Spaces are always added between operands and a newline is appended.
+// It returns the number of bytes written and any write error encountered.
+func Println(a ...any) (n int, err error) {</code></pre>
+<p>公式ドキュメントサイトの<a href="https://pkg.go.dev/fmt#Println" target="_blank" rel="noopener">fmt.Printlnの説明</a>を開くと、このコメントとまったく同じ文章が表示されます。誰かが別にドキュメントを書いているのではなく、<strong>ソースコードのコメントを機械的に集めてドキュメントを作っている</strong>のです。ターミナルで<code>go doc fmt.Println</code>と打っても同じ説明が読めます。</p>
+<p>JavaのJavadocのような専用の記法はなく、宣言の直前に空行を空けずに普通の<code>//</code>コメントを書くだけです。慣習として「<code>// Add は2つの整数の合計を返す。</code>」のように、説明する名前から文を始めます。自分で書いた関数のコメントも、エディタで関数名にマウスを乗せたときに表示されるので、コメントを書くことがそのままチームへの説明書きになります。今は「宣言の直前のコメントは特別扱いされる」ことだけ頭の片隅に置いておきましょう。</p>
+<p>公式ドキュメント：<a href="https://go.dev/doc/comment" target="_blank" rel="noopener">Go Doc Comments</a>（Docコメントの書き方の公式ガイド、英語）</p>`,
+      task: `最初の<code>fmt.Println</code>を行コメントで無効化（コメントアウト）し、<code>この行は表示されるようにしたい</code>だけが表示されるようにしてください。さらに、main関数の上に自分の言葉で説明コメントを書いてみましょう。`,
       code: `package main
 
 import "fmt"
@@ -166,7 +175,7 @@ import "fmt"
 func main() {
 	// TODO: 次の行の先頭に//を付けてコメントアウトする
 	fmt.Println("この行は表示されないようにしたい")
-	fmt.Println("コメントは実行されない")
+	fmt.Println("この行は表示されるようにしたい")
 }`,
       solution: `package main
 
@@ -176,10 +185,10 @@ import "fmt"
 func main() {
 	// コメントアウトされた行は実行されない
 	// fmt.Println("この行は表示されないようにしたい")
-	fmt.Println("コメントは実行されない")
+	fmt.Println("この行は表示されるようにしたい")
 }`,
       hints: [`行の先頭に//を付けると、その行全体がコメントになり実行されなくなります。`, `fmt.Println("この行は...")の行を// fmt.Println("この行は...")に変えれば、その行は無視されます。`],
-      expectedOutput: "コメントは実行されない"
+      expectedOutput: "この行は表示されるようにしたい"
     },
     {
       id: 5,

@@ -39,7 +39,8 @@ registerChapter({
 
 ## explanation（解説）のルール
 
-- **HTMLで記述**する（Markdown不可）。使ってよいタグ：`<p> <ul> <ol> <li> <table> <tr> <th> <td> <strong> <em> <code> <pre> <h4>`
+- **HTMLで記述**する（Markdown不可）。使ってよいタグ：`<p> <ul> <ol> <li> <table> <tr> <th> <td> <strong> <em> <code> <pre> <h4> <a>`
+- **公式ドキュメントへのリンクを積極的に付ける**。該当する公式ページ（go.dev、pkg.go.dev）があれば、解説の末尾に `<p>公式ドキュメント：<a href="URL" target="_blank" rel="noopener">ページ名</a>（一言説明、英語）</p>` の形で添える。リンクは必ず実際にアクセスして到達できることを確認する。外部リンクは必ず `target="_blank" rel="noopener"` を付ける
 - 分量の目安：日本語400〜800字＋コード例1〜2個。初心者が読んで理解でき、ミドルエンジニアにも学びがある深さにする
 - コード例は `<pre><code>...</code></pre>`、インラインは `<code>...</code>`
 - **HTML内のコード例では `<` を `&lt;` に、`&` を `&amp;` にエスケープすること**（例：`[]int` はそのままでよいが、`ch &lt;- v`、`&amp;user`、`map[string]int` 内の `&lt;` `&amp;` は必ずエスケープ）。これを忘れると表示が壊れるので最重要

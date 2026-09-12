@@ -463,6 +463,14 @@ button:disabled { opacity: 0.6; cursor: wait; }
   font-size: inherit;
 }
 
+#explanation a, .intro-page a {
+  color: var(--rust-orange-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#explanation a:hover, .intro-page a:hover { opacity: 0.8; }
+
 .intro-page ul, .intro-page ol { padding-left: 24px; }
 .intro-page li { margin: 6px 0; }
 
