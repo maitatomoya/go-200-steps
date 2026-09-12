@@ -101,7 +101,14 @@ func main() {
 <tr><td><code>%s</code></td><td>文字列</td><td><code>fmt.Printf("%s", "Go")</code>→<code>Go</code></td></tr>
 <tr><td><code>%d</code></td><td>整数（10進数）</td><td><code>fmt.Printf("%d", 42)</code>→<code>42</code></td></tr>
 </table>
-<p>注意点は2つ。<code>Printf</code>は改行が自動で入らないため、行末に改行を表す<code>\\n</code>（エスケープシーケンスと呼ばれる特殊文字）を書くこと。そして、書式指定子の数と後ろに並べる値の数・型を一致させることです。迷ったら<code>%v</code>を使えばたいてい表示できます。</p>`,
+<p>注意点は2つ。<code>Printf</code>は改行が自動で入らないため、行末に改行を表す<code>\\n</code>（エスケープシーケンスと呼ばれる特殊文字）を書くこと。そして、書式指定子の数と後ろに並べる値の数・型を一致させることです。迷ったら<code>%v</code>を使えばたいてい表示できます。</p>
+<p>では、なぜ<code>%s</code>や<code>%d</code>が別に用意されているのでしょうか。<code>%v</code>は「値の種類に応じてGoが表示形式を決める」指定子なので、便利な反面、次のような弱点があります。</p>
+<ul>
+<li><strong>意図がコードに残らない</strong>：<code>%d</code>と書いてあれば、読む人は「ここには整数が来る」とすぐ分かる。<code>%v</code>では何が来るのか読み取れない。</li>
+<li><strong>間違いに気づきにくい</strong>：<code>%d</code>に文字列を渡すと<code>go vet</code>（Goに標準で付いているコードのチェックツール）が警告してくれるが、<code>%v</code>は何でも受け入れるため、渡す値を間違えても気づけない。</li>
+<li><strong>表示を細かく整えられない</strong>：「小数点以下2桁だけ表示」「幅をそろえて右寄せ」のような調整は、<code>%.2f</code>や<code>%5d</code>のような専用の指定子でしか指定できない。</li>
+</ul>
+<p>こうした使い分けは第11章ステップ107「fmt.Sprintfと書式指定」で改めて学びます。今は「<code>%v</code>で困ることはないが、型がはっきり分かっているときは<code>%s</code>や<code>%d</code>を選ぶ方が丁寧」と思っておけば十分です。</p>`,
       task: `TODOの行の<code>Printf</code>を完成させて、<code>Gopherは13歳です</code>と<code>好きなものはコーヒーです</code>の2行を表示してください。`,
       code: `package main
 
