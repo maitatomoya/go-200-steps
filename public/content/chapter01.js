@@ -18,11 +18,13 @@ func main() {
 <p>それぞれの行の意味は次のとおりです。</p>
 <table>
 <tr><th>行</th><th>意味</th></tr>
-<tr><td><code>package main</code></td><td>このファイルが属するパッケージ（コードのまとまり）の宣言</td></tr>
-<tr><td><code>import "fmt"</code></td><td>fmtパッケージを取り込む宣言</td></tr>
+<tr><td><code>package main</code></td><td>このファイルが属するパッケージ（すぐ下で説明）の宣言。<code>main</code>という名前は「これは実行できるプログラムです」という印</td></tr>
+<tr><td><code>import "fmt"</code></td><td>fmtパッケージを取り込む宣言。これを書くと<code>fmt.Println</code>のように、fmtの中の関数が使えるようになる</td></tr>
 <tr><td><code>func main()</code></td><td>プログラムの実行が始まる関数</td></tr>
 <tr><td><code>fmt.Println(...)</code></td><td>カッコ内の値を表示して改行する</td></tr>
 </table>
+<p><strong>パッケージとは</strong>：関連する機能をひとまとめにした「道具箱」です。<code>fmt</code>は画面表示に関する道具（関数）を集めた道具箱、<code>strings</code>は文字列処理の道具箱、といった具合に、Goには最初から数多くの道具箱（標準ライブラリ）が用意されています。<code>import "fmt"</code>は「fmtという道具箱をこのファイルに持ってくる」という宣言で、これを書いて初めて<code>fmt.Println</code>（fmt道具箱のPrintlnという道具）が使えるようになります。importしていない道具箱の道具を使おうとするとコンパイルエラーになります。また、自分が書くコードもどこかのパッケージに属する必要があり、<code>package main</code>は「このファイルは実行できるプログラム本体です」という宣言です。</p>
+<p><strong>最初の3行は、今は「おまじない」で大丈夫です。</strong>この教材の課題では<code>package main</code>・<code>import "fmt"</code>・<code>func main()</code>があらかじめ書いてあるので、現時点では「この3行の中に処理を書くと実行される」とだけ理解して、中身の<code>fmt.Println</code>の行に集中してください。パッケージについては次のステップ2でもう少し掘り下げますが、複数のファイルに分けた大きなプログラムを書くまでは深く気にしなくて構いません。</p>
 <p><code>Println</code>は「Print line」の略で、表示のあとに自動で改行が入ります。また、カンマ区切りで複数の値を渡すと、半角スペースで区切って表示されます。</p>
 <pre><code>fmt.Println("Go", 2009)
 // 出力: Go 2009</code></pre>
@@ -50,13 +52,13 @@ func main() {
     {
       id: 2,
       title: "package mainとfunc main",
-      explanation: `<p>ステップ1で登場した<code>package main</code>と<code>func main()</code>は、Goプログラムを実行するための「約束事」です。この2つがそろって初めて、実行可能なプログラムになります。</p>
+      explanation: `<p>ステップ1で登場した<code>package main</code>と<code>func main()</code>は、Goプログラムを実行するための「約束事」です。この2つがそろって初めて、実行可能なプログラムになります。パッケージとは、関連する機能をひとまとめにした単位（道具箱のようなもの）で、ステップ1で使った<code>fmt</code>も表示に関する関数を集めたパッケージです。</p>
 <table>
 <tr><th>要素</th><th>役割</th></tr>
 <tr><td><code>package main</code></td><td>「このパッケージは実行可能なプログラムである」という宣言。ライブラリの場合は別の名前になる</td></tr>
 <tr><td><code>func main()</code></td><td>プログラムの入り口（エントリーポイント）。実行するとこの関数の中身が上から順に動く</td></tr>
 </table>
-<p>重要なのは、関数名が<strong>小文字の<code>main</code>ちょうど</strong>でなければならない点です。Goでは大文字と小文字は別物として扱われるため、<code>Main</code>や<code>MAIN</code>では入り口として認識されず、次のようなコンパイルエラー（プログラムを実行形式に変換する段階でのエラー）になります。</p>
+<p>重要なのは、関数名が<strong>小文字4文字の<code>main</code></strong>でなければならない点です。Goでは大文字と小文字は別物として扱われるため、<code>Main</code>や<code>MAIN</code>では入り口として認識されず、次のようなコンパイルエラー（プログラムを実行形式に変換する段階でのエラー）になります。</p>
 <pre><code>runtime.main_main·f: function main is undeclared in the main package</code></pre>
 <p>エラーメッセージは「mainパッケージの中にmain関数が宣言されていない」と教えてくれています。エラーメッセージは敵ではなく、直すべき場所を教えてくれる案内役です。<strong>英語でも臆せずに読む習慣</strong>をつけると、上達が一気に速くなります。</p>
 <p>なお、<code>import "fmt"</code>のようなimport宣言は<code>package</code>宣言の直後に書きます。この「package→import→関数」という順序もGoの決まりです。</p>`,
@@ -83,7 +85,7 @@ func main() {
     {
       id: 3,
       title: "fmt.Printlnとfmt.Printfの違い",
-      explanation: `<p><code>fmt</code>パッケージには表示用の関数がいくつかあります。中でもよく使うのが<code>Println</code>と<code>Printf</code>です。</p>
+      explanation: `<p>パッケージの中には、あらかじめ用意された関数が入っています。<code>import "fmt"</code>と書いて取り込むと、自分で作らなくても<code>fmt.Println</code>のように「パッケージ名.関数名」の形でそれらの関数を呼び出せるようになります。<code>fmt</code>パッケージには表示用の関数がいくつかあり、中でもよく使うのが<code>Println</code>と<code>Printf</code>です。</p>
 <table>
 <tr><th>関数</th><th>特徴</th></tr>
 <tr><td><code>fmt.Println</code></td><td>値をそのまま表示し、自動で改行する。手軽な確認向き</td></tr>
