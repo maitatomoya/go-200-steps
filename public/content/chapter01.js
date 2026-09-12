@@ -109,7 +109,7 @@ func main() {
 <li><strong>表示を細かく整えられない</strong>：「小数点以下2桁だけ表示」「幅をそろえて右寄せ」のような調整は、<code>%.2f</code>や<code>%5d</code>のような専用の指定子でしか指定できない。</li>
 </ul>
 <p>こうした使い分けは第11章ステップ107「fmt.Sprintfと書式指定」で改めて学びます。今は「<code>%v</code>で困ることはないが、型がはっきり分かっているときは<code>%s</code>や<code>%d</code>を選ぶ方が丁寧」と思っておけば十分です。</p>`,
-      task: `TODOの行の<code>Printf</code>を完成させて、<code>Gopherは13歳です</code>と<code>好きなものはコーヒーです</code>の2行を表示してください。`,
+      task: `TODOの行の<code>Printf</code>を完成させて、<code>Gopherは13歳です</code>と<code>好きなものはコーヒーです</code>の2行を表示してください。1行目は<code>%s</code>と<code>%d</code>、2行目は<code>%v</code>を使うこと（出力だけでなく、使った書式指定子も判定されます）。`,
       code: `package main
 
 import "fmt"
@@ -133,7 +133,12 @@ func main() {
 	fmt.Printf("好きなものは%vです\\n", "コーヒー")
 }`,
       hints: [`Printfは第1引数に書式文字列、第2引数以降に埋め込む値をカンマ区切りで並べます。`, `1つ目はfmt.Printf("%sは%d歳です\\n", "Gopher", 13)の形になります。%sの位置に"Gopher"が、%dの位置に13が入ります。`],
-      expectedOutput: "Gopherは13歳です"
+      expectedOutput: "Gopherは13歳です",
+      requiredCode: [
+        { text: "%s", message: "1行目は%sと%dを使ったPrintfで書いてください。" },
+        { text: "%d", message: "1行目は%sと%dを使ったPrintfで書いてください。" },
+        { text: "%v", message: "2行目はPrintlnではなく、%vを使ったPrintfで書いてください。" }
+      ]
     },
     {
       id: 4,
