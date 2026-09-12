@@ -69,6 +69,7 @@ for _, n := range nums {
 <div class="intro-note">
 <p><strong>要するに</strong>：Goは「メモリ管理を自動化して安全に書ける」代わりに「ごくわずかな停止」を受け入れた言語です。Webサーバー・API・CLIツールといったGoの主戦場では、この停止が問題になることはまずありません。</p>
 </div>
+<p>公式ドキュメント：<a href="https://go.dev/doc/gc-guide" target="_blank" rel="noopener">A Guide to the Go Garbage Collector</a>（GoのGCの仕組みとチューニングの公式ガイド、英語）</p>
 
 <h3>用語メモ：ジェネリクスとは</h3>
 <p>ジェネリクスは、「<strong>処理の中身は同じで、扱う型だけが違う</strong>」関数や型を、型ごとに書き分けずに1つにまとめて書ける仕組みです。たとえば「2つの値のうち大きい方を返す関数」を考えてみます。ジェネリクスがない時代のGoでは、int用とfloat64用で同じ中身の関数を2つ書く必要がありました。</p>
@@ -100,6 +101,7 @@ Max(1.5, 0.2) // Tがfloat64になる</code></pre>
 <div class="intro-note">
 <p><strong>要するに</strong>：ジェネリクスは「同じ処理を型ごとにコピーしなくて済む」仕組みで、Goには2022年に入ったばかりです。日々のWeb開発で必須になる場面は多くないので、この教材では基礎を固めたあと第12章でじっくり学びます。</p>
 </div>
+<p>公式ドキュメント：<a href="https://go.dev/doc/tutorial/generics" target="_blank" rel="noopener">Tutorial: Getting started with generics</a>（公式チュートリアル、英語）、<a href="https://go.dev/doc/go1.18" target="_blank" rel="noopener">Go 1.18 Release Notes</a>（ジェネリクスが導入されたバージョンのリリースノート、英語）</p>
 
 <h3>技術選定のときの考え方</h3>
 <table>

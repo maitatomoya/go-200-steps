@@ -228,7 +228,15 @@
     elBtnRun.textContent = running ? "実行中..." : "実行する";
   }
 
-  function showOutput(result) {
+  /**
+   * 実行結果を表示し、クリア判定を行う。
+   * 判定は「出力にexpectedOutputが含まれるか」に加えて、
+   * ステップにrequiredCodeがあれば「コードに必須の記述が含まれるか」も見る
+   * （Printfを使わせたい課題をPrintlnで通過できてしまうのを防ぐため）。
+   * @param {object} result /api/runの実行結果
+   * @param {string} code 実行したコード
+   */
+  function showOutput(result, code) {
     elOutputSection.hidden = false;
 
     elCompilerBlock.hidden = !result.compiler;
@@ -241,16 +249,25 @@
     var passed = false;
     if (result.success) {
       var expected = currentStep.expectedOutput;
-      if (expected == null || expected === "") {
-        passed = true;
-        elOutputStatus.textContent = "実行成功";
-      } else if ((result.stdout || "").indexOf(expected) !== -1) {
-        passed = true;
-        elOutputStatus.textContent = "クリア！期待どおりの出力です";
-      } else {
+      var noExpected = expected == null || expected === "";
+      var outputOk = noExpected || (result.stdout || "").indexOf(expected) !== -1;
+      if (!outputOk) {
         elOutputStatus.textContent =
           "実行は成功しましたが、期待する出力と異なります（期待に含まれる文字列：" +
           expected + "）";
+      } else {
+        var codeCheck = window.GO_TUTOR_JUDGE
+          ? window.GO_TUTOR_JUDGE.checkRequiredCode(code, currentStep.requiredCode)
+          : { ok: true, missing: [] };
+        if (codeCheck.ok) {
+          passed = true;
+          elOutputStatus.textContent = noExpected ? "実行成功" : "クリア！期待どおりの出力です";
+        } else {
+          var missing = codeCheck.missing[0];
+          elOutputStatus.textContent =
+            "出力は合っていますが、コードに「" + missing.text + "」が使われていません。" +
+            (missing.message || "課題で指定された書き方に直してみましょう");
+        }
       }
       elOutputStatus.className = passed ? "status-ok" : "status-warn";
     } else {
@@ -279,10 +296,11 @@
     elStdoutBlock.hidden = true;
     elStderrBlock.hidden = true;
 
+    var code = getCode();
     fetch("/api/run", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: getCode() }),
+      body: JSON.stringify({ code: code }),
     })
       .then(function (res) { return res.json(); })
       .then(function (result) {
@@ -291,7 +309,7 @@
           elOutputStatus.className = "status-err";
           return;
         }
-        showOutput(result);
+        showOutput(result, code);
       })
       .catch(function () {
         elOutputStatus.textContent =
