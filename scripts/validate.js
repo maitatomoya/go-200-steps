@@ -4,7 +4,8 @@
  * public/content/chapterNN.js を読み込み、以下を検証する：
  * - 章番号1〜20、ステップID1〜200が過不足なく揃っているか
  * - 各ステップの必須フィールドが存在するか
- * - solutionにfn mainが含まれるか、禁止API（stdin等）を使っていないか
+ * - solutionにfunc mainが含まれるか、禁止API（stdin等）を使っていないか
+ * - requiredCode（使用コードの判定）がある場合、solutionがそれを満たし、初期コードが満たしていないか
  *
  * 使い方：node scripts/validate.js
  */
@@ -12,6 +13,7 @@ const fs = require("fs");
 const path = require("path");
 
 const CONTENT_DIR = path.join(__dirname, "..", "public", "content");
+const judge = require(path.join(__dirname, "..", "public", "judge.js"));
 const chapters = [];
 
 // ブラウザ用ファイルをそのままNodeで評価するためのスタブ
@@ -75,6 +77,26 @@ for (const ch of chapters) {
     for (const banned of ["os.Stdin", "os.Open", "os.Create", "net.Dial"]) {
       if ((s.code || "").includes(banned) || (s.solution || "").includes(banned)) {
         errors.push(`${label}: 禁止API「${banned}」を使用しています`);
+      }
+    }
+    // requiredCode（使用コードの判定）の検証
+    if (s.requiredCode !== undefined) {
+      if (!Array.isArray(s.requiredCode)) {
+        errors.push(`${label}: requiredCodeは配列であるべきです`);
+      } else {
+        for (const item of s.requiredCode) {
+          const req = judge.normalizeRequirement(item);
+          if (!req.text) {
+            errors.push(`${label}: requiredCodeの要素にtextがありません`);
+            continue;
+          }
+          if (!judge.checkRequiredCode(s.solution || "", [item]).ok) {
+            errors.push(`${label}: solutionにrequiredCode「${req.text}」が含まれていません`);
+          }
+          if (judge.checkRequiredCode(s.code || "", [item]).ok) {
+            warnings.push(`${label}: 初期コードにrequiredCode「${req.text}」がすでに含まれています（判定が無意味になります）`);
+          }
+        }
       }
     }
     // explanation内の未エスケープの生タグ崩れの簡易チェック
